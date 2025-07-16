@@ -11,7 +11,7 @@ df_damage = df_damage.rename(columns={
     'Estimated_Financial_Loss (Million $)': 'Estimated_Financial_Loss_Million_USD'
 })
 
-# fill out missing values with 0 and convert to int where appropriate
+# fill out missing values with 0 and convert to int
 numerical_impact_cols = [
     'Homes_Destroyed', 'Businesses_Destroyed', 'Vehicles_Damaged',
     'Injuries', 'Fatalities', 'Estimated_Financial_Loss_Million_USD'
@@ -23,7 +23,7 @@ for col in numerical_impact_cols:
         df_damage[col] = df_damage[col].astype(int)
 
 # Save the cleaned DataFrame to a new CSV file
-df_damage.to_csv('California_Wildfire_Damage_Cleaned.csv', index=False)
+df_damage.to_csv('california_wildfire_damage_cleaned.csv', index=False)
 
 
 
