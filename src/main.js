@@ -189,20 +189,20 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("transform", (d, i) => `translate(0,${i * 20})`);
 
         legend.append("rect")
-            .attr("x", width - 19)
+            .attr("x", width - 23)
             .attr("width", 19)
             .attr("height", 19)
             .attr("fill", d => d.color);
 
         legend.append("text")
-            .attr("x", width - 24)
+            .attr("x", width - 25)
             .attr("y", 9.5)
             .attr("dy", "0.32em")
             .text(d => d.name);
 
         d3.select('#annotation1').text('This chart displays the total acres burned (blue bars) and the number of fire incidents (orange line) per year. There is a clear escalating trend in the number of acres burned over the years.');
     }
-
+    
     function renderSlide2(fireData, mapData) {
         const chartContainer = d3.select('#chart2');
         chartContainer.html("");
@@ -399,6 +399,6 @@ document.addEventListener('DOMContentLoaded', function () {
             .style("font-size", 12)
             .style("fill", "white");
 
-        d3.select('#annotation4').text('This pie chart shows the distribution of wildfire causes. As you can see, a significant portion of wildfires are caused by human activity.');
+        d3.select('#annotation4').text('This pie chart shows the distribution of wildfire causes. As you can see, the largest portion of wildfires are caused by human activity.');
     }
 });
