@@ -1,1 +1,29 @@
 # wildfire_ca
+
+# California Wildfire Crisis: Interactive Slideshow Visualization
+
+## Overview
+This project presents an interactive narrative visualization in the form of a web-based slideshow, focusing on California's wildfire crisis from 2013 to 2025. It aims to visualize
+escalating trends, devastating impacts, and underlying causes of wildfires in California, providing insights into this critical environmental and social issue.
+ 
+## Features
+
+The slideshow consists of four scenes, each highlighting a specific information of the wildfire crisis:
+
+1. Escalating Trends though Years: Visualizes the total acres burned and the frequency of fire incidents over time, showcasing the increasing scale of wildfires.
+2. Geographic Concentration (2013-2025): Displays a map of California, illustrating the spatial distribution and concentration of fire incidents across the state.
+3. Devastating Impacts from the Wildfires: Details the severe consequences of wildfires, including the number of homes destroyed and estimated financial losses. Interactive tooltips provide exact figures on hover.
+4. Understanding the Causes: Presents a breakdown of the various causes of wildfires, helping to understand the factors contributing to these events.
+
+## Data Sources
+
+The visualization utilizes two primary datasets, pre-processed and available in the `data/processed/` directory:
+
+`california_fire_cleaned.csv`: Contains detailed information about fire incidents, including acres burned fatalities, and incident dates.
+`california_wildfire_damage_cleaned.csv`: Provides data on the impacts of wildfires, such as homes destroyed, fatalities, and estimated financial losses.
+`California_Counties.geojson`: Geographic data for California county boundaries.
+
+## How to Run
+
+Deployed at Github Page: https://haoxinzhuang.github.io/
+

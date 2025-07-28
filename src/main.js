@@ -230,11 +230,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("class", "fire-dot")
             .attr("cx", d => projection([d.Longitude, d.Latitude])[0])
             .attr("cy", d => projection([d.Longitude, d.Latitude])[1])
-            .attr("r", d => Math.sqrt(d.AcresBurned) / 100) // Simple radius scaling
+            .attr("r", d => Math.sqrt(d.AcresBurned) / 100) // radius scaling
             .style("fill", "red")
             .style("opacity", 0.5);
         
-        d3.select('#annotation2').text('This map shows the geographic concentration of wildfires in California. The size of the red circles corresponds to the number of acres burned.');
+        d3.select('#annotation2').text('This map shows the geographic concentration of wildfires across California for all years (2013-2025) in the dataset. The size of the red circles corresponds to the number of acres burned.');
     }
 
     function renderSlide3(data) {
