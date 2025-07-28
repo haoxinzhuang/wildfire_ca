@@ -19,9 +19,11 @@ The slideshow consists of four scenes, each highlighting a specific information 
 
 The visualization utilizes two primary datasets, pre-processed and available in the `data/processed/` directory:
 
-`california_fire_cleaned.csv`: Contains detailed information about fire incidents, including acres burned fatalities, and incident dates.
-`california_wildfire_damage_cleaned.csv`: Provides data on the impacts of wildfires, such as homes destroyed, fatalities, and estimated financial losses.
-`California_Counties.geojson`: Geographic data for California county boundaries.
+1. `california_fire_cleaned.csv`: Contains detailed information about fire incidents, including acres burned fatalities, and incident dates. https://www.kaggle.com/datasets/ananthu017/california-wildfire-incidents-20132020
+
+2. `california_wildfire_damage_cleaned.csv`: Provides data on the impacts of wildfires, such as homes destroyed, fatalities, and estimated financial losses. https://www.kaggle.com/datasets/vivekattri/california-wildfire-damage-2014-feb2025
+
+3. `California_Counties.geojson`: Geographic data for California county boundaries. https://lab.data.ca.gov/dataset/california-counties1
 
 ## How to Run
 
