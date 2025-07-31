@@ -224,17 +224,42 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("fill", "#ccc")
             .attr("stroke", "#fff");
 
-        svg.selectAll(".fire-dot")
-            .data(fireData.filter(d => d.Longitude && d.Latitude))
-            .enter().append("circle")
-            .attr("class", "fire-dot")
-            .attr("cx", d => projection([d.Longitude, d.Latitude])[0])
-            .attr("cy", d => projection([d.Longitude, d.Latitude])[1])
-            .attr("r", d => Math.sqrt(d.AcresBurned) / 100) // radius scaling
-            .style("fill", "red")
-            .style("opacity", 0.5);
-        
-        d3.select('#annotation2').text('This map shows the geographic concentration of wildfires across California for all years (2013-2025) in the dataset. The size of the red circles corresponds to the number of acres burned.');
+        const years = [...new Set(fireData.map(d => d.ArchiveYear))].sort();
+        const slider = d3.select('#year-slider');
+        const yearValue = d3.select('#year-value');
+
+        slider
+            .attr('min', d3.min(years))
+            .attr('max', d3.max(years))
+            .attr('value', d3.min(years));
+
+        yearValue.text(d3.min(years));
+
+        function updateMap(year) {
+            const filteredData = fireData.filter(d => d.ArchiveYear == year && d.Longitude && d.Latitude);
+
+            const circles = svg.selectAll(".fire-dot")
+                .data(filteredData, d => d.id); 
+
+            circles.exit().remove();
+
+            circles.enter().append("circle")
+                .attr("class", "fire-dot")
+                .attr("cx", d => projection([d.Longitude, d.Latitude])[0])
+                .attr("cy", d => projection([d.Longitude, d.Latitude])[1])
+                .attr("r", d => Math.sqrt(d.AcresBurned) / 40)
+                .style("fill", "red")
+                .style("opacity", 0.5);
+            
+            yearValue.text(year);
+            d3.select('#annotation2').text(`This map shows the geographic concentration of wildfires across California for the year ${year}. The size of the red circles corresponds to the number of acres burned.`);
+        }
+
+        slider.on('input', function() {
+            updateMap(this.value);
+        });
+
+        updateMap(d3.min(years));
     }
 
     function renderSlide3(data) {
