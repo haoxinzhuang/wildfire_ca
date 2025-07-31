@@ -10,10 +10,9 @@ escalating trends, devastating impacts, and underlying causes of wildfires in Ca
 
 The slideshow consists of four scenes, each highlighting a specific information of the wildfire crisis:
 
-1. Escalating Trends though Years: Visualizes the total acres burned and the frequency of fire incidents over time, showcasing the increasing scale of wildfires.
-2. Geographic Concentration (2013-2025): Displays a map of California, illustrating the spatial distribution and concentration of fire incidents across the state.
-3. Devastating Impacts from the Wildfires: Details the severe consequences of wildfires, including the number of homes destroyed and estimated financial losses. Interactive tooltips provide exact figures on hover.
-4. Understanding the Causes: Presents a breakdown of the various causes of wildfires, helping to understand the factors contributing to these events.
+1. Escalating Trends though Years: Visualizes the total acres burned and the frequency of fire incidents over time, showcasing the increasing scale of wildfires. The interactive checkboxs allowing users to see only Acres Burned or Incident Count data.
+2. Geographic Concentration (2013-2025): Displays a map of California, illustrating the spatial distribution and concentration of fire incidents across the state. The year slider can make user to visualize the the number of acres burned in specific year.
+3. Devastating Impacts from the Wildfires: Details the severe consequences of wildfires, including the number of homes destroyed and estimated financial losses. The dropdown menu give user option to choose which impact they are interested and interactive tooltips provide exact figures on hover.
 
 ## Data Sources
 

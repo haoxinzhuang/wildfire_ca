@@ -125,13 +125,15 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("height", d => height - y(d.total_acres))
             .on("mouseover", function(d) {
                 d3.select(this).style("fill", "brown");
+                svg.selectAll(".dot").filter(dot => dot.year === d.year).style("fill", "brown");
                 tooltip.transition().duration(200).style("opacity", .9);
-                tooltip.html(`Acres Burned: ${Math.ceil(d.total_acres)}`)
+                tooltip.html(`Year: ${d.year}<br/>Acres Burned: ${Math.ceil(d.total_acres)}<br/>Incident Count: ${d.incident_count}`)
                     .style("left", (d3.event.pageX) + "px")
                     .style("top", (d3.event.pageY - 28) + "px");
             })
             .on("mouseout", function(d) {
                 d3.select(this).style("fill", "steelblue");
+                svg.selectAll(".dot").filter(dot => dot.year === d.year).style("fill", "orange");
                 tooltip.transition().duration(500).style("opacity", 0);
             });
 
@@ -197,7 +199,18 @@ document.addEventListener('DOMContentLoaded', function () {
             .attr("dy", "0.32em")
             .text(d => d.name);
 
-        d3.select('#annotation1').text('This chart displays the total acres burned (blue bars) and the number of fire incidents (orange line) per year. There is a clear escalating trend in the number of acres burned over the years.');
+        const acresBurnedCheckbox = d3.select('#acres-burned-checkbox');
+        const incidentCountCheckbox = d3.select('#incident-count-checkbox');
+
+        acresBurnedCheckbox.on("change", function() {
+            svg.selectAll(".bar").style("display", this.checked ? "" : "none");
+        });
+
+        incidentCountCheckbox.on("change", function() {
+            svg.selectAll(".line, .dot").style("display", this.checked ? "" : "none");
+        });
+
+        d3.select('#annotation1').text("California has always lived with fire, but the last decade has seen a dramatic and devastating shift. This first visualization shows the escalating trend in both the number of fires and the vastness of the land they consume. Hover over each year to see the story unfold.");
     }
     
     function renderSlide2(fireData, mapData) {

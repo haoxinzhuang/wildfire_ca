@@ -13,6 +13,18 @@
             <div class="slide" id="slide1">
                 <h2>Escalating Trends through Years</h2>
                 <p class="narrative-message">Observe the spread of wildfires in California. A worsenubf crisis is indicated by the increase in fire frequency and total area consumed year over year.</p>
+                <div id="chart1-legend" class="legend-container">
+                    <div class="legend-item">
+                        <input type="checkbox" id="acres-burned-checkbox" value="acres-burned" checked>
+                        <span class="legend-color" id="acres-burned-color"></span>
+                        <label for="acres-burned-checkbox">Acres Burned</label>
+                    </div>
+                    <div class="legend-item">
+                        <input type="checkbox" id="incident-count-checkbox" value="incident-count" checked>
+                        <span class="legend-color" id="incident-count-color"></span>
+                        <label for="incident-count-checkbox">Incident Count</label>
+                    </div>
+                </div>
                 <div id="chart1"></div>
                 <div class="annotations" id="annotation1"></div>
             </div>
