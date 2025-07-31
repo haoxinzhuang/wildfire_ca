@@ -59,9 +59,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 case 2:
                     renderSlide3(wildfireDamage);
                     break;
-                case 3:
-                    renderSlide4(wildfireDamage);
-                    break;
             }
         }
 
@@ -266,164 +263,117 @@ document.addEventListener('DOMContentLoaded', function () {
         const chartContainer = d3.select('#chart3');
         chartContainer.html("");
 
-        const yearlyData = d3.nest()
-            .key(d => d.Date.getFullYear())
-            .rollup(v => ({
-                homes_destroyed: d3.sum(v, d => d.Homes_Destroyed),
-                financial_loss: d3.sum(v, d => d.Estimated_Financial_Loss_Million_USD)
-            }))
-            .entries(data)
-            .map(d => ({ 
-                year: +d.key, 
-                ...d.value
-            })).sort((a, b) => a.year - b.year);
+        const metricSelect = d3.select('#metric-select');
 
-        const margin = {top: 20, right: 30, bottom: 40, left: 90},
-            width = 800 - margin.left - margin.right,
-            height = 400 - margin.top - margin.bottom;
+        function drawChart(metric) {
+            chartContainer.html("");
 
-        const svg = chartContainer.append("svg")
-            .attr("width", width + margin.left + margin.right)
-            .attr("height", height + margin.top + margin.bottom)
-            .append("g")
-            .attr("transform", `translate(${margin.left},${margin.top})`);
+            const yearlyData = d3.nest()
+                .key(d => d.Date.getFullYear())
+                .key(d => d.Cause)
+                .rollup(v => d3.sum(v, d => d[metric]))
+                .entries(data)
+                .map(d => {
+                    const yearData = { year: +d.key };
+                    d.values.forEach(cause => {
+                        yearData[cause.key] = cause.value;
+                    });
+                    return yearData;
+                }).sort((a, b) => a.year - b.year);
 
-        const years = yearlyData.map(d => d.year);
-        const subgroups = ['homes_destroyed', 'financial_loss'];
+            const causes = [...new Set(data.map(d => d.Cause))];
 
-        const x0 = d3.scaleBand()
-            .domain(years)
-            .range([0, width])
-            .padding([0.2]);
-        svg.append("g")
-            .attr("transform", "translate(0," + height + ")")
-            .call(d3.axisBottom(x0));
+            const margin = {top: 20, right: 30, bottom: 40, left: 90},
+                width = 800 - margin.left - margin.right,
+                height = 400 - margin.top - margin.bottom;
 
-        const x1 = d3.scaleBand()
-            .domain(subgroups)
-            .range([0, x0.bandwidth()])
-            .padding(0.05);
+            const svg = chartContainer.append("svg")
+                .attr("width", width + margin.left + margin.right)
+                .attr("height", height + margin.top + margin.bottom)
+                .append("g")
+                .attr("transform", `translate(${margin.left},${margin.top})`);
 
-        const y = d3.scaleLinear()
-            .domain([0, d3.max(yearlyData, d => d3.max(subgroups, key => d[key]))])
-            .nice()
-            .range([height, 0]);
-        svg.append("g")
-            .call(d3.axisLeft(y));
+            const x = d3.scaleBand()
+                .domain(yearlyData.map(d => d.year))
+                .range([0, width])
+                .padding([0.2]);
+            svg.append("g")
+                .attr("transform", "translate(0," + height + ")")
+                .call(d3.axisBottom(x));
 
-        const color = d3.scaleOrdinal()
-            .domain(subgroups)
-            .range(['#e41a1c','#4daf4a']);
+            const y = d3.scaleLinear()
+                .domain([0, d3.max(yearlyData, d => d3.sum(causes, cause => d[cause] || 0))])
+                .nice()
+                .range([height, 0]);
+            svg.append("g")
+                .call(d3.axisLeft(y));
 
-        const tooltip = d3.select("body").append("div")
-            .attr("class", "tooltip")
-            .style("opacity", 0);
+            const color = d3.scaleOrdinal()
+                .domain(causes)
+                .range(['#e41a1c','#377eb8','#4daf4a']);
 
-        svg.append("g")
-            .selectAll("g")
-            .data(yearlyData)
-            .enter()
-            .append("g")
-            .attr("transform", d => `translate(${x0(d.year)},0)`)
-            .selectAll("rect")
-            .data(d => subgroups.map(key => ({key: key, value: d[key]})))
-            .enter().append("rect")
-            .attr("x", d => x1(d.key))
-            .attr("y", d => y(d.value))
-            .attr("width", x1.bandwidth())
-            .attr("height", d => height - y(d.value))
-            .attr("fill", d => color(d.key))
-            .on("mouseover", function(d) {
-                d3.select(this).style("fill", d3.rgb(color(d.key)).darker(1));
-                tooltip.transition().duration(200).style("opacity", .9);
-                const formattedKey = d.key.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-                tooltip.html(`${formattedKey}: ${Math.ceil(d.value)}`)
-                    .style("left", (d3.event.pageX) + "px")
-                    .style("top", (d3.event.pageY - 28) + "px");
-            })
-            .on("mouseout", function(d) {
-                d3.select(this).style("fill", color(d.key));
-                tooltip.transition().duration(500).style("opacity", 0);
-            });
+            const stackedData = d3.stack()
+                .keys(causes)
+                (yearlyData);
 
-        const legend = svg.append("g")
-            .attr("font-family", "sans-serif")
-            .attr("font-size", 10)
-            .attr("text-anchor", "end")
-            .selectAll("g")
-            .data(subgroups.slice().reverse())
-            .enter().append("g")
-            .attr("transform", (d, i) => `translate(0,${i * 20})`);
+            const tooltip = d3.select("body").append("div")
+                .attr("class", "tooltip")
+                .style("opacity", 0);
 
-        legend.append("rect")
-            .attr("x", width - 19)
-            .attr("width", 19)
-            .attr("height", 19)
-            .attr("fill", color);
+            svg.append("g")
+                .selectAll("g")
+                .data(stackedData)
+                .enter().append("g")
+                .attr("fill", d => color(d.key))
+                .selectAll("rect")
+                .data(d => d)
+                .enter().append("rect")
+                .attr("x", d => x(d.data.year))
+                .attr("y", d => y(d[1]))
+                .attr("height", d => y(d[0]) - y(d[1]))
+                .attr("width", x.bandwidth())
+                .on("mouseover", function(d) {
+                    const subgroupName = d3.select(this.parentNode).datum().key;
+                    const subgroupValue = d.data[subgroupName];
+                    tooltip.transition().duration(200).style("opacity", .9);
+                    tooltip.html(`${subgroupName}: ${Math.ceil(subgroupValue)}`)
+                        .style("left", (d3.event.pageX) + "px")
+                        .style("top", (d3.event.pageY - 28) + "px");
+                })
+                .on("mouseout", function(d) {
+                    tooltip.transition().duration(500).style("opacity", 0);
+                });
 
-        legend.append("text")
-            .attr("x", width - 24)
-            .attr("y", 9.5)
-            .attr("dy", "0.32em")
-            .text(d => d.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase()));
+            const legend = svg.append("g")
+                .attr("font-family", "sans-serif")
+                .attr("font-size", 10)
+                .attr("text-anchor", "end")
+                .selectAll("g")
+                .data(causes.slice().reverse())
+                .enter().append("g")
+                .attr("transform", (d, i) => `translate(0,${i * 20})`);
 
-        d3.select('#annotation3').text('This chart shows the devastating impacts of wildfires, including homes destroyed and estimated financial loss.');
+            legend.append("rect")
+                .attr("x", width - 19)
+                .attr("width", 19)
+                .attr("height", 19)
+                .attr("fill", color);
+
+            legend.append("text")
+                .attr("x", width - 24)
+                .attr("y", 9.5)
+                .attr("dy", "0.32em")
+                .text(d => d);
+
+            d3.select('#annotation3').text(`This chart shows the devastating impacts of wildfires, including ${metric.replace(/_/g, ' ').toLowerCase()} per year, broken down by cause.`);
+        }
+
+        drawChart(metricSelect.property('value'));
+
+        metricSelect.on('change', function() {
+            drawChart(this.value);
+        });
     }
 
-    function renderSlide4(data) {
-        const chartContainer = d3.select('#chart4');
-        chartContainer.html("");
-
-        const causeData = d3.nest()
-            .key(d => d.Cause)
-            .rollup(v => v.length)
-            .entries(data);
-
-        const width = 450;
-        const height = 450;
-        const margin = 40;
-
-        const radius = Math.min(width, height) / 2 - margin;
-
-        const svg = chartContainer.append("svg")
-            .attr("width", width)
-            .attr("height", height)
-            .append("g")
-            .attr("transform", `translate(${width / 2},${height / 2})`);
-
-        const color = d3.scaleOrdinal()
-            .domain(causeData.map(d => d.key))
-            .range(d3.schemeDark2);
-
-        const pie = d3.pie()
-            .value(d => d.value);
-
-        const data_ready = pie(causeData);
-
-        const arc = d3.arc()
-            .innerRadius(0)
-            .outerRadius(radius);
-
-        svg.selectAll('slices')
-            .data(data_ready)
-            .enter()
-            .append('path')
-            .attr('d', arc)
-            .attr('fill', d => color(d.data.key))
-            .attr("stroke", "black")
-            .style("stroke-width", "2px")
-            .style("opacity", 0.7);
-
-        svg.selectAll('slices')
-            .data(data_ready)
-            .enter()
-            .append('text')
-            .text(d => `${d.data.key} (${(d.data.value / d3.sum(causeData, c => c.value) * 100).toFixed(2)}%)`)
-            .attr("transform", d => `translate(${arc.centroid(d)})`)
-            .style("text-anchor", "middle")
-            .style("font-size", 12)
-            .style("fill", "white");
-
-        d3.select('#annotation4').text('This pie chart shows the distribution of wildfire causes. As you can see, the largest portion of wildfires are caused by human activity.');
-    }
+    
 });

@@ -30,15 +30,21 @@
             <div class="slide" id="slide3">
                 <h2>Devastating Impacts from the Wildfires</h2>
                 <p class="narrative-message">Understand the human and economic toll of these disasters. From the loss of homes to the crippling financial strain on local communities.</p>
+                <div id="chart3-controls">
+                    <label for="metric-select">Select an Impact:</label>
+                    <select id="metric-select">
+                        <option value="Estimated_Financial_Loss_Million_USD" selected>Financial Loss (Million USD)</option>
+                        <option value="Homes_Destroyed">Homes Destroyed</option>
+                        <option value="Businesses_Destroyed">Businesses Destroyed</option>
+                        <option value="Vehicles_Damaged">Vehicles Damaged</option>
+                        <option value="Injuries">Injuries</option>
+                        <option value="Fatalities">Death</option>
+                    </select>
+                </div>
                 <div id="chart3"></div>
                 <div class="annotations" id="annotation3"></div>
             </div>
-            <div class="slide" id="slide4">
-                <h2>Understanding the Causes</h2>
-                <p class="narrative-message">Explore the root causes behind California's wildfires. This breakdown reveals the primary triggers of these events, emphasizing the significant role of human activity in igniting destructive fires.</p>
-                <div id="chart4"></div>
-                <div class="annotations" id="annotation4"></div>
-            </div>
+            
         </div>
         <div id="navigation">
             <button id="prev">Previous</button>
